@@ -65,6 +65,31 @@ I Proceeded to hint 3 and clicked the url on that page and was directed to the p
 
 
 ##  Level 2
+
+This level explained how S3 buckets are private and secure by default by ensuring that when one wishes to access it as a web page then setting **Static Website Hosting** has to
+be turned on. The bucket policy also has to be changed to have the “s3:GetObject” privileges available to everyone. A flaw can be introduced if one allows everyone to have “List” permissions since this might allow bucket listings on the webserver.</br> 
+I proceeded to hint 1 where I executed the command to list the contents the s3 bucket as confirmed by the below image. I found multiple files including html files.
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/dca69ad6-52ee-4769-81f3-6042fb6547e1)
+<br/>Image 7: Listed contents in the S3 bucket 
+
+</div>
+
+At this point I noticed the extension **secret-e4443fc.html** and I pasted it on the url flaws.cloud and I was directed to the end of level 2 as confirmed by the below image:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/46541b43-b7f9-473a-b439-79accbc51285)
+<br/>Image 8: Secret file for level 2 
+
+</div>
+
+For this level, the lesson learnt is that a mistake where one opens permissions to “Any Authenticated AWS User” can also be exploited. This means that anybody that has an AWS account can manipulate the permissions given. This can be fixed by opening permissions to specific AWS users.
+
+
+
 ##  Level 3
 ##  Level 4
 ##  Level 5
