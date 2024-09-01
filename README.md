@@ -231,7 +231,8 @@ Next I went into the latest folder and proceeded until I found the flaws iam fil
 
 </div>
 
-Using the credentials access_key and secret access key I was able to configure a new aws profile with the name week12-level 5 user as shown here <ins>Image 26: week12-level5 user profile.</ins> I was unable to configure the session_token at this stage therefore I accessed the credentials file in the **.aws** folder and added the session_token
+Using the credentials access_key and secret access key I was able to configure a new aws profile with the name week12-level 5 user as shown here <ins>Image 26: week12-level5 user profile.</ins>
+I was unable to configure the session_token at this stage therefore I accessed the credentials file in the **.aws** folder and added the session_token
 there as seen here <ins>Image 27: Added session token</ins>
 
 <div align="center">
@@ -253,4 +254,100 @@ Proceeding to the next hint I found the link to the last challenge as shown belo
 </div>
 
 ##  Level 6
+
+The SecurityAudit group can get a high level overview of the recourses in an aws account. In order to utilize this I first used the command aws configure to configure a
+new profile as shown below:
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/d73f5f10-d05c-4d2a-81c9-a5fa8ae313b7)  
+<br/>Image 29: Configured the profile Week12-Level6
+
+</div>
+
+Next I used the command **iam get-user** so that I can find out who the user is by getting important information like the user name and the user id as shown below:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/82c42747-50d7-42bd-a6f6-7258017de8d7)
+<br/>Image 30: Got user details 
+
+</div>
+
+After knowing that the username is Level6 i run the command list-attached-user-policies in order to find out what policies are attached to the userand sure enough
+I found 2 policies; MySecurityAudit and list_apigateways a shown below:
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/66907dae-d328-4bd6-a1ca-6b426f25e6fc)  
+<br/>Image 31: Policies found 
+
+</div>
+
+Once I knew the ARN for the policy I could get its version ID. Using the command **iam get-policy** in conjunction with the policy ARN I proceeded to search for the
+policies version id and sure enough I found it as confirmed by the picture below:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/667bfba3-ddbc-43f5-a502-90c90b292963)
+<br/>Image 32: Got the version ID of the list_apigateways 
+
+</div>
+
+After finding the version id as **v4** I had now enough parameters to run the command **get-policy-version** and get to know what the actual policy is. After running the
+command as shown below I could tell that when I use this policy I can call “apigateway:GET” on "arn:aws:apigateway:us-west-2::/restapis/*".
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/fdd8e17a-fb07-4316-97c0-9fd70e369046)
+<br/>Image 33: Policy details 
+
+</div>
+
+The API gateway is used to call a lambda function. I did not know how to invoke this particular lambda function therefore I utilized the SecurityAudit Policy and run the
+command **lambda list-functions** as shown below in order to find out more information about the lambda.
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/e598dc91-359f-435d-82ac-0eedb3d41d77)
+<br/>Image 34: Level6 function details
+
+</div>
+The information in the above picture told me that there is a function called “Level 6”.
+
+Using the acquired function name I run the command **lambda get-policy --function-name Level 6** as shown below and found out that I had the ability to run `arn:aws:execute-api:us-west-2:975426262029:s33ppypa75/*/GET/level6\` which is highlighted in the below picture. The picture below also informed me that "s33ppypa75" is a rest-api-id which can be used with the lambda invoke policy </br>
+
+I therefore proceeded to run the command **aws --profile level6 --region us-west-2 apigateway get-stages --rest-api-id "s33ppypa75"** and found out that the stage
+name for the lambda function is Prod which is highlighted in the below picture.
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/2e82b82d-ff7b-4b0e-ba65-01c47179b4d2)
+<br/>Image 35: Stage name of lambda funtion Level 6 
+
+</div>
+
+With the above information I could call the lambda function since I had the rest-api-id, stage name and region. Using curl I called the lambda function as shown below:
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/bc0502e8-7736-4d7e-8b6e-f164f5572f33)
+<br/>Image 36: Accessed Level 6 function using curl
+
+</div>
+
+When I visited the given site I was redirected to the web page that informed me that I had completed the flaws challenge as confirmed by the image below:
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/25a14ec7-a629-47e1-aa2f-71cefa4ee2b1)
+<br/>Image 37: Finished level 6 
+
+</div>
+
 ##  Conclusion
+
+Concluding the flaws.cloud challenge marks a pivotal moment in my journey towards becoming a proficient cloud security professional. The practical insights and
+knowledge gained from this experience have equipped me with the skills to better understand and address the complexities of securing cloud infrastructure. I am now
+more confident in my ability to identify potential vulnerabilities and implement robust security measures. This challenge has solidified my commitment to continuous
+learning and improvement in the field of cloud security, and I look forward to applying these skills to safeguard cloud environments in future professional endeavors.
