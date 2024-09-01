@@ -130,9 +130,85 @@ Using the keys I configured an aws profile called flaws and used that profile to
 <br/>Image 14: Level 4 page
 </div>
 
-
-
 ##  Level 4
+
+For this level I had to access the webpage running on an EC2 instance. In order to do this I first required the account ID which can be gotten using the aws key from the previous level. Using the command **sts get-caller-identity** I was able to get the ID of the back up a confirmed in the below image:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/d33ce283-10b0-4f29-900a-ebc5efff7d3b)
+<br/>Image 15: ID of the backup 
+
+</div>
+
+Next I had to discover the snapshot. Using the owner ID discovered in <ins>Image 15: ID of the backup</ins> I run the command **ec2 describe-snapshots** in order to know the public snapshots under the account. I found a snapshot as seen below:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/3eee175d-ffc6-48ce-a1e7-85333cc514be)
+<br/>Image 16: Backup Snapshot 
+
+</div>
+
+Next I wanted to look at the details in the snapshot. I proceeded to my amazon console and ensured that the user flaws has the permissions **AmazonEC2FullAccess** as shown below:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/9f4eaaf5-8c97-42a9-9bb9-3105dcc63ed9)
+<br/>Image 17: Ensured permission AmazonEC2FullAccess is active
+
+</div>
+
+Now since I know the snapshot ID and had all the necessary permissions, I could mount the backup. In order to do this I run the command **ec2 create-volume** with all the necessary parameters as seen in the below image. 
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/35780918-ed32-4e21-b755-186d5d4be8e8)
+<br/>Image 18: Created an ec2 volume 
+
+</div>
+
+This process was a success since when I proceeded to the amazon console a volume with the same snapshot id was present, as highlighted in both <ins>Image 18: Created an ec2 volume</ins> and the image below:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/df79d74e-d78b-4b24-b871-b6070835c49d)
+<br/>Image 19: Created ec2 volume present in the amazon console 
+
+</div>
+
+Next I launched an instance so that I could get a key pair which would enable me to ssh into the ec2 instance. I downloaded the key pair and set it permissions such that the user has read permissions while the group and others have no permissions at all. Next I remotely connected to the instance I created via ssh and it was a success as seen below:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/6ae69a67-967b-4a57-9b09-1e838d3b1deb)
+<br/>Image 20: Successful remote connection to the ec2 instance 
+
+</div>
+
+Next I needed to mount the extra volume. I performed this by running the command **lsblk** and a confirmed by <ins>Image 21: Disk mounted</ins> the mount procedure was a success. After mounting the volume, I snooped around and found the file setupNginx.sh and upon reviewing its contents I found a user name flaws and the corresponding password. This can be confirmed by <ins>Image 22: flaws credentials</ins>
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/451622ab-3f6e-40b0-8533-04dc7f6ec1f4)
+<br/>Image 21: Disk mounted
+
+![image](https://github.com/user-attachments/assets/11bd2531-61ac-4cb5-bae6-6f6dd39de5ab)
+<br/> Image 22 flaws credentials
+
+</div>
+
+Using those credentials I was able to log in to the site whose link was provided and I was directed to the below site indicating that I finished level 4.
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/386bbe74-6d28-47dd-bf65-01939f9a5c8b)
+<br/>Image 23: Finished level 4
+
+</div>
+
+From this I learnt that AWS allows me to make snapshots of EC2 instances and databases (RDS). The main purpose is for backups, but sometimes I will use snapshots to regain access to my EC2 instances if I forget the passwords. This feature can also be exploited by attackers. Snapshots are usually restricted to my own account, so a potential attack could involve someone gaining access to an AWS key that lets them start, stop, and manage EC2 instances. They could then use this key to snapshot an EC2 instance and spin up another instance with that volume in my environment to gain access. As with all backups, I need to be cautious about protecting them.
+
 ##  Level 5
 ##  Level 6
 ##  Conclusion
