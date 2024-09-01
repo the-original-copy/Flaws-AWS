@@ -88,9 +88,50 @@ At this point I noticed the extension **secret-e4443fc.html** and I pasted it on
 
 For this level, the lesson learnt is that a mistake where one opens permissions to “Any Authenticated AWS User” can also be exploited. This means that anybody that has an AWS account can manipulate the permissions given. This can be fixed by opening permissions to specific AWS users.
 
-
-
 ##  Level 3
+
+I proceeded to hint 1 where I noticed that the S3 bucket in question had a .git file. In order to download the S3 bucket I created a directory called git and run the command **aws s3 syn** to install the bucket as shown in the below image.
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/f13340a1-b657-4efc-9e72-63a8c35a65ed)
+<br/>Image 9: Downloaded the S3 bucket 
+
+</div>
+
+I proceeded to the next hint and found out that people add secret things to git repos, and then try to remove them without revoking or rolling the secrets. Using the command **git log**, confirmed in the below image , I found out that two commits were made within a minute of each other. The user was probably trying to correct a mistake made in the first commit and did not revoke or rolled the secrets.
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/7b8305ec-54b9-4cd7-bd8b-fefa6dc5fb93)
+<br/>Image 10: git log response 
+
+</div>
+
+Next I run the command **git checkout** on the first commit, confirmed here <ins>Image 11:Run git checkout</ins>, in order to see how the git repo looked like before the correction was made. After running the command I checked the contents of the git folder I had downloaded and found a file called “access_key.txt” as confirmed here <ins>Image 12: Git folder contents</ins>. When I checked the contents of the file I found keys that could be used to configure an aws profile.
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/e48b05bd-4629-41b0-9f87-0401f97bd79a)
+<br/>Image 11: Run git checkout 
+
+![image](https://github.com/user-attachments/assets/6f2ae447-7c59-4695-b2f9-17cac48b8f05)
+<br/>Image 12: Git folder contents
+</div>
+
+Using the keys I configured an aws profile called flaws and used that profile to check the contents of the S3 buckets as confirmed here <ins>Image 13: Flaws profile and S3 bucket contents</ins>. Among the contents was the link to the next level which is highlighted by a green marker. I copied the link and I was directed to level 4 as confirmed here <ins>Image 14: Level 4 page.</ins>
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/db033f08-b228-4703-aec6-b3e5368015a7)
+<br/>Image 13: Flaws profile and S3 bucket contents 
+
+![image](https://github.com/user-attachments/assets/9125448a-1794-492b-ae6a-61e9d3e6ca49)
+<br/>Image 14: Level 4 page
+</div>
+
+
+
 ##  Level 4
 ##  Level 5
 ##  Level 6
