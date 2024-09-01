@@ -207,8 +207,50 @@ Using those credentials I was able to log in to the site whose link was provided
 
 </div>
 
-From this I learnt that AWS allows me to make snapshots of EC2 instances and databases (RDS). The main purpose is for backups, but sometimes I will use snapshots to regain access to my EC2 instances if I forget the passwords. This feature can also be exploited by attackers. Snapshots are usually restricted to my own account, so a potential attack could involve someone gaining access to an AWS key that lets them start, stop, and manage EC2 instances. They could then use this key to snapshot an EC2 instance and spin up another instance with that volume in my environment to gain access. As with all backups, I need to be cautious about protecting them.
+From this I learnt that AWS allows me to make snapshots of EC2 instances and databases (RDS). The main purpose is for backups, but sometimes I will use snapshots to regain access 
+to my EC2 instances if I forget the passwords. This feature can also be exploited by attackers. Snapshots are usually restricted to my own account, so a potential attack could involve someone gaining access to an AWS key that lets them start, stop, and manage EC2 instances. They could then use this key to snapshot an EC2 instance and spin up another instance with that volume in my environment to gain access. As with all backups, I need to be cautious about protecting them.
 
 ##  Level 5
+
+I proceeded to hint 1 I found the IP address 169.254.169.254 which is a link-local address commonly used by cloud services for instance metadata. It allows instances in
+a cloud environment to access metadata about themselves without an internet connection. Knowing this I used curl to access that site and I received the below feedback:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/0b125ab8-4e04-4a5d-9c81-e98ca1ed12c7)
+<br/>Image 24: Accessed 169.254.169.254 
+
+</div>
+
+Next I went into the latest folder and proceeded until I found the flaws iam file where I found the credentials including the access token as shown below:
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/8f5b5911-e49b-410e-a125-8654e985984e)  
+<br/>Image 25: Accessed security credentials 
+
+</div>
+
+Using the credentials access_key and secret access key I was able to configure a new aws profile with the name week12-level 5 user as shown here <ins>Image 26: week12-level5 user profile.</ins> I was unable to configure the session_token at this stage therefore I accessed the credentials file in the **.aws** folder and added the session_token
+there as seen here <ins>Image 27: Added session token</ins>
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/e384ee85-9794-48be-840d-1d813eeda664)
+<br/>Image 26: week12-level5 user profile 
+
+![image](https://github.com/user-attachments/assets/c4722fea-3e73-4c7c-8bd2-b6ad0bc77e27)
+<br/>Image 27: Added session token
+</div>
+
+Proceeding to the next hint I found the link to the last challenge as shown below:
+
+<div align="center">
+
+  ![image](https://github.com/user-attachments/assets/8d4aed52-4ca1-4996-939d-3386c3c56430)
+<br/>Image 28: Finished level 5 
+
+</div>
+
 ##  Level 6
 ##  Conclusion
